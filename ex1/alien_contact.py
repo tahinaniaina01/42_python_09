@@ -7,7 +7,7 @@
 #   By: trakotos <trakototrakotos@student.42antana   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/04/18 10:05:01 by trakotos            #+#    #+#            #
-#   Updated: 2026/04/18 10:58:34 by trakotos           ###   ########.fr      #
+#   Updated: 2026/04/18 14:08:19 by trakotos           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -49,28 +49,29 @@ class AlienContact(BaseModel):
         
         return self
     
-def get_station(station_data: dict[str, Any]) -> AlienContact:
-    station = AlienContact(
-        contact_id=station_data["contact_id"],
-        timestamp=station_data["timestamp"],
-        location=station_data["location"],
-        contact_type=station_data["contact_type"],
-        signal_strength=station_data["signal_strength"],
-        duration_minutes=station_data["duration_minutes"],
-        witness_count=station_data["witness_count"],
-        message_received=station_data["message_received"]
-    )
-    return station
+    @classmethod
+    def create_alien_contact(cls, station_data: dict[str, Any]) -> "AlienContact":
+        station = cls(
+            contact_id=station_data["contact_id"],
+            timestamp=station_data["timestamp"],
+            location=station_data["location"],
+            contact_type=station_data["contact_type"],
+            signal_strength=station_data["signal_strength"],
+            duration_minutes=station_data["duration_minutes"],
+            witness_count=station_data["witness_count"],
+            message_received=station_data["message_received"]
+        )
+        return station
 
-def print_station(station: AlienContact):
-    print(f"ID: {station.contact_id}")
-    print(f"Type: {station.contact_type}")
-    print(f"Location: {station.location}")
-    print(f"Signal: {station.signal_strength}/10")
-    print(f"Duration: {station.duration_minutes} minutes")
-    print(f"Witnesses: {station.witness_count}")
-    print(f"Message: '{station.message_received}'")
-    print()
+    def show(self) -> None:
+        print(f"ID: {self.contact_id}")
+        print(f"Type: {self.contact_type}")
+        print(f"Location: {self.location}")
+        print(f"Signal: {self.signal_strength}/10")
+        print(f"Duration: {self.duration_minutes} minutes")
+        print(f"Witnesses: {self.witness_count}")
+        print(f"Message: '{self.message_received}'")
+        print()
     
 def main() -> None:
     stations_datas = [
@@ -99,9 +100,9 @@ def main() -> None:
     for station_data in stations_datas:
         try:
             print("=" * 40)
-            station = get_station(station_data)
+            station = AlienContact.create_alien_contact(station_data)
             print("Valid station created:")
-            print_station(station)
+            station.show()
         except ValidationError as error:
             print("Expected validation error:")
             for err in error.errors():

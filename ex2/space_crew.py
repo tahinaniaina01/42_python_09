@@ -7,7 +7,7 @@
 #   By: trakotos <trakototrakotos@student.42antana   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/04/18 11:01:14 by trakotos            #+#    #+#            #
-#   Updated: 2026/04/18 14:59:41 by trakotos           ###   ########.fr      #
+#   Updated: 2026/04/18 15:07:23 by trakotos           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -145,7 +145,28 @@ def main() -> None:
             ],
             "mission_status": "planned",
             "budget_millions": 2500.0
+        },
+        {
+            "mission_id": "M2024_MARS",
+            "mission_name": "Mars Colony Establishment",
+            "destination": "Mars",
+            "launch_date": datetime(2026, 7, 1, 9, 0, 0),
+            "duration_days": 900,
+            "crew": [
+                {
+                    "member_id": "S001",
+                    "name": "Sarah Connor",
+                    "rank": "lieutenant",
+                    "age": 35,
+                    "specialization": "Mission Command",
+                    "years_experience": 10,
+                    "is_active": True
+                }
+            ],
+            "mission_status": "planned",
+            "budget_millions": 2500.0
         }
+
     ]
     print("Space Mission Crew Validation")
     for data in space_mission_datas:

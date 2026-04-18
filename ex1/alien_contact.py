@@ -7,7 +7,7 @@
 #   By: trakotos <trakototrakotos@student.42antana   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/04/18 10:05:01 by trakotos            #+#    #+#            #
-#   Updated: 2026/04/18 10:33:17 by trakotos           ###   ########.fr      #
+#   Updated: 2026/04/18 10:58:34 by trakotos           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -30,8 +30,8 @@ class AlienContact(BaseModel):
     signal_strength: float = Field(..., ge=0.0, le=10.0)
     duration_minutes: int = Field(..., ge=1, le=1440)
     witness_count: int = Field(..., ge=1, le=100)
-    message_received: Optional[str] = Field(default=None, max_length=500)
     is_verified: bool = Field(default=False)
+    message_received: Optional[str] = Field(default=None, max_length=500)
 
     @model_validator(mode='after')
     def validate_cantact_rules(self) -> "AlienContact":
@@ -48,3 +48,68 @@ class AlienContact(BaseModel):
             raise ValueError("Strong signals (> 7.0) should include a received message")
         
         return self
+    
+def get_station(station_data: dict[str, Any]) -> AlienContact:
+    station = AlienContact(
+        contact_id=station_data["contact_id"],
+        timestamp=station_data["timestamp"],
+        location=station_data["location"],
+        contact_type=station_data["contact_type"],
+        signal_strength=station_data["signal_strength"],
+        duration_minutes=station_data["duration_minutes"],
+        witness_count=station_data["witness_count"],
+        message_received=station_data["message_received"]
+    )
+    return station
+
+def print_station(station: AlienContact):
+    print(f"ID: {station.contact_id}")
+    print(f"Type: {station.contact_type}")
+    print(f"Location: {station.location}")
+    print(f"Signal: {station.signal_strength}/10")
+    print(f"Duration: {station.duration_minutes} minutes")
+    print(f"Witnesses: {station.witness_count}")
+    print(f"Message: '{station.message_received}'")
+    print()
+    
+def main() -> None:
+    stations_datas = [
+        {
+            "contact_id": "AC_2024_001",
+            "timestamp": "2024-01-15T10:30:00",
+            "location": "Area 51, Nevada",
+            "contact_type": "radio",
+            "signal_strength": 8.5,
+            "duration_minutes": 45,
+            "witness_count": 5,
+            "message_received": "Greetings from Zeta Reticuli"
+        },
+        {
+            "contact_id": "AC_2024_001",
+            "timestamp": "2024-01-15T10:30:00",
+            "location": "Area 51, Nevada",
+            "contact_type": "telepathic",
+            "signal_strength": 8.5,
+            "duration_minutes": 45,
+            "witness_count": 2,
+            "message_received": "Greetings from Zeta Reticuli"
+        },
+    ]
+    
+    for station_data in stations_datas:
+        try:
+            print("=" * 40)
+            station = get_station(station_data)
+            print("Valid station created:")
+            print_station(station)
+        except ValidationError as error:
+            print("Expected validation error:")
+            for err in error.errors():
+                if "Value error" in err["msg"]:
+                    err["msg"] = err["msg"][13:]
+                print(err["msg"])
+        except Exception as error:
+            print(f"[ERROR] {error}")
+
+if __name__ == "__main__":
+    main()

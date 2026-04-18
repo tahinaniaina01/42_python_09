@@ -7,7 +7,7 @@
 #   By: trakotos <trakototrakotos@student.42antana   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/04/18 11:01:14 by trakotos            #+#    #+#            #
-#   Updated: 2026/04/18 14:38:21 by trakotos           ###   ########.fr      #
+#   Updated: 2026/04/18 14:59:41 by trakotos           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -160,8 +160,8 @@ def main() -> None:
                 if "Value error" in err["msg"]:
                     err["msg"] = err["msg"][13:]
                 print(err["msg"])
-        # except Exception as error:
-        #     print(f"[ERROR] {error}")
+        except Exception as error:
+            print(f"[ERROR] {error}")
 
 if __name__ == "__main__":
     main()

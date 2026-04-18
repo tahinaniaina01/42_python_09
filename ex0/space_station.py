@@ -7,7 +7,7 @@
 #   By: trakotos <trakototrakotos@student.42antana   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/04/18 08:54:41 by trakotos            #+#    #+#            #
-#   Updated: 2026/04/18 09:54:14 by trakotos           ###   ########.fr      #
+#   Updated: 2026/04/18 15:01:53 by trakotos           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -25,25 +25,26 @@ class SpaceStation(BaseModel):
     is_operational: bool = Field(default=True)
     notes: Optional[str] = Field(default=None, max_length=200)
 
-def print_space_station(station: SpaceStation) -> None:
-    print(f"ID: {station.station_id}")
-    print(f"Name: {station.name}")
-    print(f"Crew: {station.crew_size} people")
-    print(f"Power: {station.power_level}%")
-    print(f"Oxygen: {station.oxygen_level}%")
-    print(f"Status: {'Operational' if station.is_operational else 'Offline'}\n")
+    def show(self) -> None:
+        print(f"ID: {self.station_id}")
+        print(f"Name: {self.name}")
+        print(f"Crew: {self.crew_size} people")
+        print(f"Power: {self.power_level}%")
+        print(f"Oxygen: {self.oxygen_level}%")
+        print(f"Status: {'Operational' if self.is_operational else 'Offline'}\n")
 
-def get_station(station_data: dict[str, Any]) -> SpaceStation:
-    station = SpaceStation(
-        station_id=station_data["station_id"],
-        name=station_data["name"],
-        crew_size=station_data["crew_size"],
-        power_level=station_data["power_level"],
-        oxygen_level=station_data["oxygen_level"],
-        is_operational=station_data["is_operational"],
-        last_maintenance=station_data["last_maintenance"]
-    )
-    return station
+    @classmethod
+    def create_station(cls, station_data: dict[str, Any]) -> "SpaceStation":
+        station = cls(
+            station_id=station_data["station_id"],
+            name=station_data["name"],
+            crew_size=station_data["crew_size"],
+            power_level=station_data["power_level"],
+            oxygen_level=station_data["oxygen_level"],
+            is_operational=station_data["is_operational"],
+            last_maintenance=station_data["last_maintenance"]
+        )
+        return station
 
 def main() -> None:
     print("Space Station Data Validation")
@@ -70,9 +71,9 @@ def main() -> None:
     for station_data in stations_datas:
         try:
             print("=" * 40)
-            station = get_station(station_data)
+            station = SpaceStation.create_station(station_data)
             print("Valid station created:")
-            print_space_station(station)
+            station.show()
         except ValidationError as error:
             print("Expected validation error:")
             for err in error.errors():

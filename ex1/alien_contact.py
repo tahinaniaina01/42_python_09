@@ -118,6 +118,8 @@ def main() -> None:
                 if "Value error" in err["msg"]:
                     err["msg"] = err["msg"][13:]
                 print(err["msg"])
+        except KeyError as error:
+            print(f"[ERROR] missig key {error}")
         except Exception as error:
             print(f"[ERROR] {error}")
 

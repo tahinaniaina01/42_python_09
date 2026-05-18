@@ -70,8 +70,8 @@ def main() -> None:
             "name": "International Space Station",
             "crew_size": 67,
             "power_level": 85.5,
-            "oxygen_level": 92.3,
             "is_operational": True,
+            "oxygen_level": 92.3,
             "last_maintenance": "2024-01-15T10:30:00"
         }
     ]
@@ -85,6 +85,8 @@ def main() -> None:
             print("Expected validation error:")
             for err in error.errors():
                 print(err["msg"])
+        except KeyError as error:
+            print(f"[ERROR] missig key {error}")
         except Exception as error:
             print(f"[ERROR] {error}")
 

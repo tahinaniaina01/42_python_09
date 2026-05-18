@@ -11,9 +11,14 @@
 #                                                                             #
 # ########################################################################### #
 
-from pydantic import BaseModel, Field, ValidationError
-from typing import Optional, Any
-from datetime import datetime
+try:
+    from pydantic import BaseModel, Field, ValidationError
+    from typing import Optional, Any
+    from datetime import datetime
+except Exception:
+    print("Module not found error")
+    exit(1)
+
 
 class SpaceStation(BaseModel):
     station_id: str = Field(..., min_length=3, max_length=10)
@@ -31,7 +36,8 @@ class SpaceStation(BaseModel):
         print(f"Crew: {self.crew_size} people")
         print(f"Power: {self.power_level}%")
         print(f"Oxygen: {self.oxygen_level}%")
-        print(f"Status: {'Operational' if self.is_operational else 'Offline'}\n")
+        print(
+            f"Status: {'Operational' if self.is_operational else 'Offline'}\n")
 
     @classmethod
     def create_station(cls, station_data: dict[str, Any]) -> "SpaceStation":
@@ -45,6 +51,7 @@ class SpaceStation(BaseModel):
             last_maintenance=station_data["last_maintenance"]
         )
         return station
+
 
 def main() -> None:
     print("Space Station Data Validation")
@@ -62,7 +69,7 @@ def main() -> None:
             "station_id": "ISS001",
             "name": "International Space Station",
             "crew_size": 67,
-            "power_level": 185.5,
+            "power_level": 85.5,
             "oxygen_level": 92.3,
             "is_operational": True,
             "last_maintenance": "2024-01-15T10:30:00"
@@ -80,6 +87,7 @@ def main() -> None:
                 print(err["msg"])
         except Exception as error:
             print(f"[ERROR] {error}")
+
 
 if __name__ == "__main__":
     main()

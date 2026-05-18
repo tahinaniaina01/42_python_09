@@ -16,6 +16,7 @@ from typing import Any, List
 from pydantic import BaseModel, Field, model_validator, ValidationError
 from enum import Enum
 
+
 class Rank(str, Enum):
     CADET = "cadet"
     OFFICER = "officer"
@@ -36,16 +37,16 @@ class CrewMember(BaseModel):
     @classmethod
     def create_crew_member(cls, crew_data: dict[str, Any]) -> "CrewMember":
         crew = cls(
-            member_id = crew_data["member_id"],
-            name = crew_data["name"],
-            rank = crew_data["rank"],
-            age = crew_data["age"],
-            specialization = crew_data["specialization"],
-            years_experience = crew_data["years_experience"],
-            is_active = crew_data["is_active"]
+            member_id=crew_data["member_id"],
+            name=crew_data["name"],
+            rank=crew_data["rank"],
+            age=crew_data["age"],
+            specialization=crew_data["specialization"],
+            years_experience=crew_data["years_experience"],
+            is_active=crew_data["is_active"]
         )
         return crew
-    
+
     def show(self) -> None:
         print(f"{self.name} ({self.rank}) - {self.specialization}")
 
@@ -69,30 +70,39 @@ class SpaceMission(BaseModel):
             for m in self.crew
         )
         if not has_senior_officer:
-            raise ValueError("Mission must have at least one Commander or Captain")
+            raise ValueError(
+                "Mission must have at least one Commander or Captain")
         if self.duration_days > 365:
-            experienced_crew = sum(1 for m in self.crew if m.years_experience >= 5)
+            experienced_crew = sum(
+                1 for m in self.crew if m.years_experience >= 5)
             if experienced_crew / len(self.crew) < 0.5:
-                raise ValueError("Long missions (> 365 days) need 50%% experienced crew (5+ years)")
-        inactive_member = [member for member in self.crew if not member.is_active]
+                raise ValueError(
+                    "Long missions (> 365 days) need 50%% "
+                    "experienced crew (5+ years)"
+                )
+        inactive_member = [
+            member for member in self.crew if not member.is_active]
         if inactive_member:
             raise ValueError("All crew members must be active")
         return self
-    
+
     @classmethod
-    def create_space_mission(cls, space_mission_data: dict[str, Any]) -> "SpaceMission":
+    def create_space_mission(
+        cls, space_mission_data: dict[str, Any]
+    ) -> "SpaceMission":
         space_mission = cls(
-            mission_id = space_mission_data["mission_id"],
-            mission_name = space_mission_data["mission_name"],
-            destination = space_mission_data["destination"],
-            launch_date = space_mission_data["launch_date"],
-            duration_days = space_mission_data["duration_days"],
-            crew = [CrewMember.create_crew_member(data) for data in space_mission_data["crew"]],
-            mission_status = space_mission_data["mission_status"],
-            budget_millions = space_mission_data["budget_millions"],
+            mission_id=space_mission_data["mission_id"],
+            mission_name=space_mission_data["mission_name"],
+            destination=space_mission_data["destination"],
+            launch_date=space_mission_data["launch_date"],
+            duration_days=space_mission_data["duration_days"],
+            crew=[CrewMember.create_crew_member(
+                data) for data in space_mission_data["crew"]],
+            mission_status=space_mission_data["mission_status"],
+            budget_millions=space_mission_data["budget_millions"],
         )
         return space_mission
-    
+
     def show(self) -> None:
         print(f"Mission: {self.mission_name}")
         print(f"ID: {self.mission_id}")
@@ -100,11 +110,12 @@ class SpaceMission(BaseModel):
         print(f"Duration: {self.duration_days} days")
         print(f"Budget: ${self.budget_millions}M")
         print(f"Crew size: {len(self.crew)}")
-        print(f"Crew members:")
+        print("Crew members:")
         for crew_member in self.crew:
             print(end="- ")
             crew_member.show()
         print()
+
 
 def main() -> None:
     space_mission_datas = [
@@ -183,6 +194,7 @@ def main() -> None:
                 print(err["msg"])
         except Exception as error:
             print(f"[ERROR] {error}")
+
 
 if __name__ == "__main__":
     main()

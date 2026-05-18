@@ -16,11 +16,13 @@ from pydantic import BaseModel, Field, model_validator, ValidationError
 from datetime import datetime
 from typing import Any, Optional
 
+
 class ContactType(str, Enum):
     RADIO = "radio"
     VISUAL = "visual"
     PHYSICAL = "physical"
     TELEPATHIC = "telepathic"
+
 
 class AlienContact(BaseModel):
     contact_id: str = Field(..., min_length=5, max_length=15)
@@ -37,20 +39,26 @@ class AlienContact(BaseModel):
     def validate_cantact_rules(self) -> "AlienContact":
         if not self.contact_id.startswith("AC"):
             raise ValueError("Contanct ID must start with AC")
-        
+
         if self.contact_type == ContactType.PHYSICAL and not self.is_verified:
             raise ValueError("Physical contact reports must be verified")
-        
-        if self.contact_type == ContactType.TELEPATHIC and self.witness_count < 3:
+
+        if (
+            self.contact_type == ContactType.TELEPATHIC
+            and self.witness_count < 3
+        ):
             raise ValueError("Telepathic contact requires at least 3 witness")
 
         if self.signal_strength > 7.0 and not self.message_received:
-            raise ValueError("Strong signals (> 7.0) should include a received message")
-        
+            raise ValueError(
+                "Strong signals (> 7.0) should include a received message")
+
         return self
-    
+
     @classmethod
-    def create_alien_contact(cls, station_data: dict[str, Any]) -> "AlienContact":
+    def create_alien_contact(
+        cls, station_data: dict[str, Any]
+    ) -> "AlienContact":
         station = cls(
             contact_id=station_data["contact_id"],
             timestamp=station_data["timestamp"],
@@ -72,7 +80,8 @@ class AlienContact(BaseModel):
         print(f"Witnesses: {self.witness_count}")
         print(f"Message: '{self.message_received}'")
         print()
-    
+
+
 def main() -> None:
     stations_datas = [
         {
@@ -96,7 +105,7 @@ def main() -> None:
             "message_received": "Greetings from Zeta Reticuli"
         },
     ]
-    
+
     for station_data in stations_datas:
         try:
             print("=" * 40)
@@ -111,6 +120,7 @@ def main() -> None:
                 print(err["msg"])
         except Exception as error:
             print(f"[ERROR] {error}")
+
 
 if __name__ == "__main__":
     main()
